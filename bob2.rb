@@ -4,98 +4,70 @@ class Bob
     @remark = remark
   end
 
-
-##__________
-## Statements
-  def stating_something
-    /.*\./
-    # /^[A-Z]([[[[a-z]-],]\s])*([.])/
-  end
-
-  def using_acronyms_in_regular_speech
-    # remark.include(/([A-Z]){3,}/)
-
-  end
-
-
-##___________
-## Questions
-  def asking_a_question
-    /.*\?/
-  end
-
-  def asking_a_numeric_question
-    /.*\?/
-  end
-
-  def asking_gibberish
-    /.*\?/
-  end
-
-  def forceful_questions
-    /[A-Z]*\?/
-  end
-
-##___________
-## Shouting
-  def shouting
-    /([A-Z]){3,}\.*\!/
-    # ('A'..'Z').to_s.upcase + "!"
-  end
-
-  def shouting_gibberish
-    /([A-Z]){3,}/
-    # ('A'..'Z').to_s.shuffle.upcase
-  end
-
-  def talking_forcefully
-    /[A-Z]*\!/
-  end
-
-  def shouting_numbers
-    (remark.include(/d/) && remark.include(/([A-Z]){2,}\.*\!/))
-  end
-
-  def test_only_numbers
-    /d/
-  end
-
-##___________
-
   def feedback(remark)
     puts "Bob hears #{text.inspect}, and.."
   end
 
+  def shouting
+    remark.to_s != remark.upcase
+  end
+
+  def shouting_gibberish
+    remark =~ /^[A-Z]*$/
+  end
+
+  def asking_a_question
+    remark =~ /^[A-Z]([a-z]*\s)*[a-z]*(\?)$/
+    # remark.to_s == remark.include?("?")
+  end
+
+  def asking_a_numeric_question
+    /^[A-Z]([a-z]*\s)*([a-z]*\,\s)*([a-z]*\s)*\d*\?$/
+  end
+
+  def asking_gibberish
+    /^[a-z]*\?$/
+  end
+
   def hey(remark)
-    if remark.upcase == remark
-      "Whoa, chill out!"
+    if remark.include?("\n")
+      'Whatever.'
+    elsif remark =~ /^\s/
+      'Fine. Be that way!'
+    elsif remark.to_s == ''
+      'Fine. Be that way!'
+    elsif remark.include?("!") && remark.include?("?")
+      'Sure.'
+    elsif remark =~ /\?./
+      'Whatever.'
+    elsif remark =~ /\W(\!)/
+      'Whoa, chill out!'
+    elsif remark =~ /\d(\?)/
+      'Sure.'
+    elsif remark =~ /[a-z](!)/
+      'Whatever.'
+    elsif remark =~ /^(\d*(\,)(\s))*(\d)(\s)[A-Z]*(\!)/
+      'Whoa, chill out!'
+    elsif remark =~ /^([A-Z]*(\s))*[A-Z]*(\?)$/
+      'Whoa, chill out!'
+    elsif remark =~ /^([A-Z]*(\s))*[A-Z]*(\!)$/
+      'Whoa, chill out!'
+    elsif remark =~ /\d(,)/
+      'Whatever.'
+    elsif remark =~ /^([A-Z]*(\s))*[A-Z]*$/
+      'Whoa, chill out!'
+    elsif @asking_gibberish
+      'Sure.'
+    elsif @asking_a_numeric_question
+      'Sure.'
+    elsif @shouting_gibberish
+      'Sure.'
+    elsif @asking_a_question
+      'Sure.'
+    elsif @shouting
+      "Whatever."
     else
       "Whatever."
     end
   end
-
-  # def hey(remark)
-  #   if remark.match stating_something
-  #     'Whatever.'
-  #   elsif remark.match shouting
-  #     'Whoa, chill out!'
-  #   elsif remark.match shouting_gibberish
-  #     'Whoa, chill out!'
-  #   elsif remark.match asking_a_question
-  #     'Sure.'
-  #   elsif remark.match asking_a_numeric_question
-  #     'Sure'
-  #   elsif remark.match asking_gibberish
-  #     'Sure'
-  #   elsif talking_forcefully
-  #     'Whatever.'
-  #   elsif remark.include talking_forcefully
-  #     'Whatever.'
-  #   elsif using_acronyms_in_regular_speech
-  #     'Whatever.'
-  #   elsif remark.match forceful_questions
-  #     'Whoa, chill out!'
-  #   end
-  # end
-
 end
